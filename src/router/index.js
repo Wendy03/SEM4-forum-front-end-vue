@@ -45,23 +45,49 @@ export default new VueRouter({
       component: () => import('../views/Restaurant.vue')
     },
     {
-      path: '/users/top',
-      name: 'users-top',
-      component: () => import('../views/UsersTop.vue')
-    }, {
-      path: '/restaurants/:id',
-      name: 'restaurant',
-      component: () => import('../views/Restaurant.vue')
-    },
-    {
       path: '/restaurants/:id/dashboard',
       name: 'restaurant-dashboard',
       component: () => import('../views/RestaurantDashboard.vue')
     },
     {
+      path: '/users/top',
+      name: 'users-top',
+      component: () => import('../views/UsersTop.vue')
+    },
+    {
       path: '/users/:id',
       name: 'user',
       component: () => import('../views/User.vue')
+    },
+    {
+      path: '/users/:id/edit',
+      name: 'user-edit',
+      component: () => import('../views/UserEdit.vue')
+    },
+    {
+      path: '/admin',
+      exact: true,
+      redirect: '/admin/restaurants'
+    },
+    {
+      path: '/admin/restaurants',
+      name: 'admin-restaurants',
+      component: () => import('../views/AdminRestaurants.vue')
+    },
+    {
+      path: '/admin/restaurants/new',
+      name: 'admin-restaurant-new',
+      component: () => import('../views/AdminRestaurantNew.vue')
+    },
+    {
+      path: '/admin/restaurants/:id',
+      name: 'admin-restaurant',
+      component: () => import('../views/AdminRestaurant.vue')
+    },
+    {
+      path: '/admin/restaurants/:id/edit',
+      name: 'admin-restaurant-edit',
+      component: () => import('../views/AdminRestaurantEdit.vue')
     },
     {
       path: '*',
