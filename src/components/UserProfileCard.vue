@@ -23,7 +23,10 @@
             </li>
           </ul>
           <template v-if="isCurrentUser">
-            <a href="#" class="btn btn-primary">Edit</a>
+            <router-link
+              :to="{name: 'user-edit', params: {id: user.id}}"
+              class="btn btn-primary"
+            >Edit</router-link>
           </template>
           <template v-else>
             <button
@@ -56,7 +59,7 @@ export default {
       required: true
     },
     isCurrentUser: {
-      type: Object,
+      type: Boolean,
       required: true
     },
     initialIsFollowed: {
