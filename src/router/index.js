@@ -12,7 +12,7 @@ export default new VueRouter({
     {
       path: '/',
       name: 'root',
-      redirect: '/restaurants'
+      redirect: '/signin'
     },
     {
       path: '/signin',
@@ -88,6 +88,16 @@ export default new VueRouter({
       path: '/admin/restaurants/:id/edit',
       name: 'admin-restaurant-edit',
       component: () => import('../views/AdminRestaurantEdit.vue')
+    },
+    {
+      path: '/admin/categories',
+      name: 'admin-categories',
+      component: () => import('../views/AdminCategories.vue')
+    },
+    {
+      path: '/admin/users',
+      name: 'admin-userss',
+      component: () => import('../views/AdminUsers.vue')
     },
     {
       path: '*',
