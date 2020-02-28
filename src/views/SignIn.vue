@@ -32,7 +32,11 @@
         />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+        :disabled="isProcessing"
+      >Submit</button>
 
       <div class="text-center mb-3">
         <p>
@@ -54,42 +58,51 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      isProcessing: false
     };
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
       // 如果 email 或 password 為空，則使用 Toast 提示
       // 然後 return 不繼續往後執行
-      if (!this.email || !this.password) {
-        Toast.fire({
-          type: "warning",
-          title: "請填入 email 和 password"
-        });
-        return;
-      }
-      authorizationAPI
-        .signIn({
-          email: this.email,
-          password: this.password
-        })
-        .then(response => {
-          console.log("response", response);
-
-          // ...
-        })
-        .catch(error => {
-          // 將密碼欄位清空
-          this.password = "";
-
-          // 顯示錯誤提示
+      try {
+        if (!this.email || !this.password) {
           Toast.fire({
             type: "warning",
             title: "請確認您輸入的帳號密碼錯誤",
             icon: "warning"
           });
-          console.log("error", error);
+          return;
+        }
+
+        this.isProcessing = true;
+        const response = await authorizationAPI.signIn({
+          email: this.email,
+          password: this.password
         });
+        console.log(response);
+        const { data, statusText } = response;
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        // 將 token 存放在 localStorage 內
+        localStorage.setItem("token", data.token);
+
+        // 成功登入後轉址到餐聽首頁
+        this.$router.push("/restaurants");
+      } catch (error) {
+        // 將密碼欄位清空
+        this.password = "";
+
+        // 顯示錯誤提示
+        Toast.fire({
+          type: "warning",
+          title: "請確認您輸入的帳號密碼錯誤",
+          icon: "warning"
+        });
+        this.isProcessing = false;
+      }
     }
   }
 };
