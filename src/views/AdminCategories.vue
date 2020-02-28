@@ -6,10 +6,10 @@
     <form class="my-4">
       <div class="form-row">
         <div class="col-auto">
-          <input type="text" class="form-control" placeholder="新增餐廳類別..." />
+          <input v-model="newCategoryName" type="text" class="form-control" placeholder="新增餐廳類別..." />
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-primary">新增</button>
+          <button type="button" class="btn btn-primary" @click.stop.prevent="createCategory">新增</button>
         </div>
       </div>
     </form>
@@ -29,7 +29,11 @@
           </td>
           <td class="d-flex justify-content-between">
             <button type="button" class="btn btn-link mr-2">Edit</button>
-            <button type="button" class="btn btn-link mr-2">Delete</button>
+            <button
+              type="button"
+              class="btn btn-link mr-2"
+              @click.stop.prevent="deleteCategory(category.id)"
+            >Delete</button>
           </td>
         </tr>
       </tbody>
@@ -39,6 +43,7 @@
 
 <script>
 import AdminNav from "@/components/AdminNav";
+import uuid from "uuid/v4";
 //  2. 定義暫時使用的資料
 const dummyData = {
   categories: [
@@ -76,6 +81,7 @@ export default {
   // 3. 定義 Vue 中使用的 data 資料
   data() {
     return {
+      newCategoryName: "",
       categories: []
     };
   },
@@ -87,6 +93,23 @@ export default {
     // 4. 定義 `fetchCategories` 方法，把 `dummyData` 帶入 Vue 物件
     fetchCategories() {
       this.categories = dummyData.categories;
+    },
+    createCategory() {
+      //TODO: 透過API告知伺服器新增的餐廳類別
+      //將新的類別添加到陣列中
+      this.categories.push({
+        id: uuid(),
+        name: this.newCategoryName
+      });
+      this.newCategoryName = ""; //清空原本欄位中的內容
+    },
+    deleteCategory(categoryId) {
+      // TODO: 透過 API 告知伺服器欲刪除的餐廳類別
+
+      // 將該餐廳類別從陣列中移除
+      this.categories = this.categories.filter(
+        category => category.id !== categoryId
+      );
     }
   }
 };
