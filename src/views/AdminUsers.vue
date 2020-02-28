@@ -22,7 +22,7 @@
               v-if="currentUser !== user.id"
               type="button"
               class="btn btn-link"
-              @click.stop.prevent="toggleRole({userId: user.id, isAdmin:user.isAdmin} )"
+              @click.stop.prevent="toggleUserRole({userId: user.id, isAdmin:user.isAdmin} )"
             >{{user.isAdmin ? 'set as user' : 'set as admin'}}</button>
           </td>
         </tr>
@@ -176,7 +176,7 @@ export default {
     fetchUser() {
       this.users = dummyData.users;
     },
-    toggleRole({ userId, isAdmin }) {
+    toggleUserRole({ userId, isAdmin }) {
       this.users = this.users.map(user => {
         if (user.id !== userId) {
           return user;
