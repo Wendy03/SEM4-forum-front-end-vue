@@ -97,7 +97,9 @@ export default {
           ...category,
           isEditing: false
         }));
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           type: "error",
           title: "無法取得餐廳類別，請稍後再試"
@@ -117,7 +119,6 @@ export default {
         const { data, statusText } = await adminAPI.categories.create({
           name: this.newCategoryName
         });
-        console.log(data);
         if (statusText !== "OK" || data.status !== "success") {
           throw new Error(statusText);
         }
@@ -128,7 +129,8 @@ export default {
         });
         this.newCategoryName = "";
         this.isProcessing = false;
-      } catch {
+        this.fetchCategories();
+      } catch (error) {
         Toast.fire({
           type: "error",
           title: "無法建立餐廳類別，請稍後再試"
@@ -141,7 +143,6 @@ export default {
           categoryId,
           name
         });
-        console.log({ data, statusText });
         if (statusText !== "OK" || data.status !== "success") {
           throw new Error(statusText);
         }
@@ -150,6 +151,25 @@ export default {
         Toast.fire({
           type: "error",
           title: "無法更新餐廳類別，請稍後再試"
+        });
+      }
+    },
+    async deleteCategory(categoryId) {
+      try {
+        const { data, statusText } = await adminAPI.categories.delete({
+          categoryId
+        });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        this.categories = this.categories.filter(
+          category => category.id !== categoryId
+        );
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法刪除餐廳類別，請稍後再試",
+          icon: "error"
         });
       }
     },
@@ -177,14 +197,6 @@ export default {
         };
       });
       this.toggleIsEditing(categoryId);
-    },
-    deleteCategory(categoryId) {
-      // TODO: 透過 API 告知伺服器欲刪除的餐廳類別
-
-      // 將該餐廳類別從陣列中移除
-      this.categories = this.categories.filter(
-        category => category.id !== categoryId
-      );
     }
   }
 };
