@@ -9,7 +9,12 @@
           <input v-model="newCategoryName" type="text" class="form-control" placeholder="新增餐廳類別..." />
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-primary" @click.stop.prevent="createCategory">新增</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click.stop.prevent="createCategory"
+            :disabled="isProcessing"
+          >新增</button>
         </div>
       </div>
     </form>
@@ -61,7 +66,6 @@
 
 <script>
 import AdminNav from "@/components/AdminNav";
-import uuid from "uuid/v4";
 // STEP 1: 匯入 adminAPI 和錯誤提示用的 Toast
 import adminAPI from "./../apis/admin";
 import { Toast } from "./../utils/helpers";
@@ -74,7 +78,8 @@ export default {
   data() {
     return {
       newCategoryName: "",
-      categories: []
+      categories: [],
+      isProcessing: false
     };
   },
   // 5. 調用 `fetchCategories` 方法
@@ -99,14 +104,35 @@ export default {
         });
       }
     },
-    createCategory() {
-      //TODO: 透過API告知伺服器新增的餐廳類別
-      //將新的類別添加到陣列中
-      this.categories.push({
-        id: uuid(),
-        name: this.newCategoryName
-      });
-      this.newCategoryName = ""; //清空原本欄位中的內容
+    async createCategory() {
+      try {
+        if (!this.newCategoryName) {
+          Toast.fire({
+            type: "warning",
+            title: "請填寫類別名稱",
+            icon: "warning"
+          });
+        }
+        this.isProcessing = true;
+        const { data, statusText } = await adminAPI.categories.create({
+          name: this.newCategoryName
+        });
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
+        Toast.fire({
+          type: "success",
+          title: data.message,
+          icon: "success"
+        });
+        this.newCategoryName = "";
+        this.isProcessing = false;
+      } catch {
+        Toast.fire({
+          type: "error",
+          title: "無法建立餐廳類別，請稍後再試"
+        });
+      }
     },
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map(category => {
