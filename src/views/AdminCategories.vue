@@ -117,7 +117,8 @@ export default {
         const { data, statusText } = await adminAPI.categories.create({
           name: this.newCategoryName
         });
-        if (statusText !== "OK") {
+        console.log(data);
+        if (statusText !== "OK" || data.status !== "success") {
           throw new Error(statusText);
         }
         Toast.fire({
@@ -134,6 +135,24 @@ export default {
         });
       }
     },
+    async updateCategory({ categoryId, name }) {
+      try {
+        const { data, statusText } = await adminAPI.categories.update({
+          categoryId,
+          name
+        });
+        console.log({ data, statusText });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        this.toggleIsEditing(categoryId);
+      } catch {
+        Toast.fire({
+          type: "error",
+          title: "無法更新餐廳類別，請稍後再試"
+        });
+      }
+    },
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map(category => {
         if (category.id !== categoryId) return category;
@@ -144,10 +163,6 @@ export default {
           isEditing: !category.isEditing
         };
       });
-    },
-    updateCategory({ categoryId }) {
-      // TODO: 透過 API 去向伺服器更新餐廳類別名稱
-      this.toggleIsEditing(categoryId);
     },
     handleCancel(categoryId) {
       this.categories = this.categories.map(category => {
