@@ -33,13 +33,13 @@
               v-if="isFollowed"
               type="button"
               class="btn btn-danger"
-              @click.stop.prevent="removeFollowing()"
+              @click.stop.prevent="removeFollowing(user.id)"
             >取消追蹤</button>
             <button
               v-else
               type="button"
               class="btn btn-primary"
-              @click.stop.prevent="addFollowing()"
+              @click.stop.prevent="addFollowing(user.id)"
             >追蹤</button>
           </template>
         </div>
@@ -49,7 +49,10 @@
 </template>
 
 <script>
+import usersAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "../utils/mixins";
+
 export default {
   name: "UserProfileCard",
   mixins: [emptyImageFilter],
@@ -72,12 +75,43 @@ export default {
       isFollowed: this.initialIsFollowed
     };
   },
+  watch: {
+    initialIsFollowed(isFollowed) {
+      this.isFollowed = isFollowed;
+    }
+  },
   methods: {
-    addFollowing() {
-      this.isFollowed = true;
+    async addFollowing(userId) {
+      try {
+        const { data, statusText } = await usersAPI.addFollowing({
+          userId
+        });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        this.isFollowed = true;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法將使用者加入追蹤，請稍後再試"
+        });
+      }
     },
-    removeFollowing() {
-      this.isFollowed = false;
+    async removeFollowing(userId) {
+      try {
+        const { data, statusText } = await usersAPI.deleteFollowing({
+          userId
+        });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        this.isFollowed = false;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法將使用者移除追蹤，請稍後再試"
+        });
+      }
     }
   }
 };
