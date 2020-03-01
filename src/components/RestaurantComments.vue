@@ -22,18 +22,10 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import commentsAPI from "./../apis/comments";
+import { Toast } from "./../utils/helpers";
 import { fromNowFilter } from "../utils/mixins";
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "管理者",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true
-  },
-  isAuthenticated: true
-};
 
 export default {
   mixins: [fromNowFilter],
@@ -43,15 +35,27 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      currentUser: dummyUser.currentUser
-    };
+  computed: {
+    ...mapState(["currentUser"])
   },
   methods: {
-    handleDeleteButtonClick(commentId) {
-      console.log("handleDeleteButtonClick", commentId);
-      this.$emit("after-delete-comment", commentId);
+    async handleDeleteButtonClick(commentId) {
+      try {
+        const { data, statusText } = await commentsAPI.delete({ commentId });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        this.$emit("after-delete-comment", commentId);
+        Toast.fire({
+          icon: "success",
+          title: "移除評論成功"
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除餐廳資料，請稍後再試"
+        });
+      }
     }
   }
 };

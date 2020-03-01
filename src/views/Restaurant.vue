@@ -94,6 +94,7 @@ export default {
           title: "無法取得餐廳資料，請稍後再試"
         });
       }
+      this.fetchRestaurant(restaurantId);
     },
     afterCreateComment(payload) {
       const { commentId, restaurantId, text } = payload;
