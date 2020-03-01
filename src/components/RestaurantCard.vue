@@ -118,7 +118,7 @@ export default {
     async addLike(restaurantId) {
       try {
         // STEP 3: 使用撰寫好的 addFavorite 方法去呼叫 API，並取得回傳內容
-        const { data, statusText } = await usersAPI.addFavorite({
+        const { data, statusText } = await usersAPI.addLike({
           restaurantId
         });
 
@@ -143,7 +143,7 @@ export default {
     },
     async deleteLike(restaurantId) {
       try {
-        const { data, statusText } = await usersAPI.deleteFavorite({
+        const { data, statusText } = await usersAPI.deleteLike({
           restaurantId
         });
 
