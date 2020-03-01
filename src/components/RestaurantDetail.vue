@@ -78,6 +78,14 @@ export default {
       restaurant: this.initialRestaurant
     };
   },
+  watch: {
+    initialRestaurant(restaurant) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...restaurant
+      };
+    }
+  },
   methods: {
     addFavorite() {
       this.restaurant = {
