@@ -94,6 +94,25 @@ export default {
           title: "無法取得餐廳資料，請稍後再試"
         });
       }
+    },
+    afterCreateComment(payload) {
+      const { commentId, restaurantId, text } = payload;
+      this.restaurantComments.push({
+        id: commentId,
+        RestaurantId: restaurantId,
+        User: {
+          id: this.currentUser.id,
+          name: this.currentUser.name
+        },
+        text,
+        createdAt: new Date()
+      });
+    },
+    afterDeleteComment(commentId) {
+      // 以 filter 保留未被選擇的 comment.id
+      this.restaurantComments = this.restaurantComments.filter(
+        comment => comment.id !== commentId
+      );
     }
   }
 };
