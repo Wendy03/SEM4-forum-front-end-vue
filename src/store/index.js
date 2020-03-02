@@ -22,8 +22,16 @@ export default new Vuex.Store({
         // 將 API 取得的 currentUser 覆蓋掉 Vuex state 中的 currentUser
         ...currentUser
       }
+      state.token = localStorage.getItem('token')
       // 將使用者的登入狀態改為 true
       state.isAuthenticated = true
+    },
+    revokeAuthentication(state) {
+      state.currentUser = {}
+      state.isAuthenticated = false
+      // 登出時一並將 state 內的 token 移除
+      state.token = ''
+      localStorage.removeItem('token')
     }
   },
   actions: {
