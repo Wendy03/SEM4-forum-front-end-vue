@@ -11,17 +11,23 @@
         <h2>{{user.name}}</h2>
         <span class="badge badge-secondary">追蹤人數：{{user.FollowerCount}}</span>
         <p class="mt-3">
+          <router-link
+            v-if="currentUser.id === user.id"
+            :to="{name: 'user-edit', params: {id: user.id}}"
+            role="button"
+            class="btn red-btn btn-sm mt-0"
+          >編輯</router-link>
           <button
-            v-if="user.isFollowed"
-            type="button"
-            class="btn btn-danger"
+            v-else-if="user.isFollowed"
             @click.stop.prevent="removeFollowing(user.id)"
+            type="button"
+            class="btn red-btn btn-sm mt-0"
           >取消追蹤</button>
           <button
             v-else
-            type="button"
-            class="btn btn-primary"
             @click.stop.prevent="addFollowing(user.id)"
+            type="button"
+            class="btn red-btn btn-sm mt-0"
           >追蹤</button>
         </p>
       </div>
@@ -30,6 +36,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import NavTabs from "../components/NavTabs";
 import usersAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
@@ -45,6 +52,9 @@ export default {
     return {
       users: []
     };
+  },
+  computed: {
+    ...mapState(["currentUser"])
   },
   created() {
     this.fetchTopUsers();
