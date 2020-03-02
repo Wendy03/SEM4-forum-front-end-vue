@@ -3,7 +3,8 @@
     <!-- 1. 使用先前寫好的 AdminNav -->
     <AdminNav />
 
-    <table class="table">
+    <Spinner v-if="isLoading" />
+    <table v-else class="table">
       <thead class="thead-dark">
         <tr>
           <th scope="col">#</th>
@@ -36,14 +37,17 @@ import { mapState } from "vuex";
 import adminAPI from "./../apis/admin";
 import { Toast } from "./../utils/helpers";
 import AdminNav from "@/components/AdminNav";
+import Spinner from "./../components/Spinner";
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   data() {
     return {
-      users: []
+      users: [],
+      isLoading: true
     };
   },
   computed: {
@@ -61,7 +65,9 @@ export default {
           throw new Error(statusText);
         }
         this.users = data.users;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           type: "error",
           title: "無法取得使用者資料，請稍後再試"

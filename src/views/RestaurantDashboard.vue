@@ -1,6 +1,7 @@
 <template>
   <div class="container py-5">
-    <template>
+    <Spinner v-if="isLoading" />
+    <template v-else>
       <div>
         <h1>{{ restaurant.name }}</h1>
         <p>[{{ restaurant.categoryName }}]</p>
@@ -21,9 +22,13 @@
 <script>
 import restaurantsAPI from "./../apis/restaurants";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner";
 
 export default {
   name: "RestaurantDashboard",
+  components: {
+    Spinner
+  },
   data() {
     return {
       restaurant: {
@@ -33,7 +38,8 @@ export default {
         commentsLength: 0,
         favoritedUsersLength: 0,
         likedUsersLength: 0
-      }
+      },
+      isLoading: true
     };
   },
   created() {
@@ -43,6 +49,7 @@ export default {
   methods: {
     async fetchRestaurant(restaurantId) {
       try {
+        this.isLoading = true;
         const {
           data: { restaurant },
           statusText
@@ -63,7 +70,9 @@ export default {
           favoritedUsersLength: restaurant.FavoritedUsers.length,
           likedUsersLength: restaurant.LikedUsers.length
         };
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法取得餐廳資料，請稍後再試"

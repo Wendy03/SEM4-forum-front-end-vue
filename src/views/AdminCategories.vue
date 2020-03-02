@@ -18,7 +18,8 @@
         </div>
       </div>
     </form>
-    <table class="table">
+    <Spinner v-if="isLoading" />
+    <table v-else class="table">
       <thead class="thead-dark">
         <tr>
           <th scope="col" width="60">#</th>
@@ -69,17 +70,20 @@ import AdminNav from "@/components/AdminNav";
 // STEP 1: 匯入 adminAPI 和錯誤提示用的 Toast
 import adminAPI from "./../apis/admin";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner";
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   // 3. 定義 Vue 中使用的 data 資料
   data() {
     return {
       newCategoryName: "",
       categories: [],
-      isProcessing: false
+      isProcessing: false,
+      isLoading: true
     };
   },
   // 5. 調用 `fetchCategories` 方法

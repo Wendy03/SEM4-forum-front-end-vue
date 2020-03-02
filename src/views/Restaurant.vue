@@ -1,16 +1,19 @@
 <template>
   <div class="container py-5">
     <h1>餐廳描述頁</h1>
-    <!-- 餐廳資訊頁 RestaurantDetail -->
-    <RestaurantDetail :initial-restaurant="restaurant" />
-    <hr />
-    <!-- 餐廳評論 RestaurantComments -->
-    <RestaurantComments
-      :restaurant-comments="restaurantComments"
-      @after-delete-comment="afterDeleteComment"
-    />
-    <!-- 新增評論 CreateComment -->
-    <CreateComment :restaurant-id="restaurant.id" @after-create-comment="afterCreateComment" />
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <!-- 餐廳資訊頁 RestaurantDetail -->
+      <RestaurantDetail :initial-restaurant="restaurant" />
+      <hr />
+      <!-- 餐廳評論 RestaurantComments -->
+      <RestaurantComments
+        :restaurant-comments="restaurantComments"
+        @after-delete-comment="afterDeleteComment"
+      />
+      <!-- 新增評論 CreateComment -->
+      <CreateComment :restaurant-id="restaurant.id" @after-create-comment="afterCreateComment" />
+    </template>
   </div>
 </template>
 
@@ -19,6 +22,7 @@ import RestaurantDetail from "../components/RestaurantDetail";
 import RestaurantComments from "../components/RestaurantComments";
 import CreateComment from "../components/CreateComment";
 import restaurantsAPI from "./../apis/restaurants";
+import Spinner from "./../components/Spinner.vue";
 import { Toast } from "./../utils/helpers";
 import { mapState } from "vuex";
 
@@ -27,7 +31,8 @@ export default {
   components: {
     RestaurantDetail,
     RestaurantComments,
-    CreateComment
+    CreateComment,
+    Spinner
   },
   data() {
     return {
@@ -43,7 +48,8 @@ export default {
         isFavorited: false,
         isLiked: false
       },
-      restaurantComments: []
+      restaurantComments: [],
+      isLoading: true
     };
   },
   // STEP 2: 從 Vuex 取得 currentUser 的資料
@@ -87,7 +93,9 @@ export default {
         };
 
         this.restaurantComments = data.restaurant.Comments;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         // STEP 5: 錯誤處理
         Toast.fire({
           type: "error",

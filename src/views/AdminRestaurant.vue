@@ -1,6 +1,7 @@
 <template>
   <div class="container py-5">
-    <div class="row">
+    <Spinner v-if="isLoading" />
+    <div v-else class="row">
       <div class="col-md-12">
         <h1>{{ restaurant.name }}</h1>
         <p>[{{ restaurant.categoryName }}]</p>
@@ -41,9 +42,13 @@ import { emptyImageFilter } from "./../utils/mixins";
 // STEP 1: 匯入 adminAPI 和錯誤提示用的 Toast
 import adminAPI from "./../apis/admin";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner";
 
 export default {
   name: "AdminRestaurant",
+  components: {
+    Spinner
+  },
   mixins: [emptyImageFilter],
   data() {
     return {
@@ -56,7 +61,8 @@ export default {
         tel: "",
         address: "",
         description: ""
-      }
+      },
+      isLoading: true
     };
   },
   created() {
@@ -71,6 +77,7 @@ export default {
   },
   methods: {
     async fetchRestaurant(restaurantId) {
+      this.isLoading = true;
       try {
         const {
           data: { restaurant },
@@ -92,7 +99,9 @@ export default {
           address: restaurant.address,
           description: restaurant.description
         };
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         this.isProcessing = false;
         Toast.fire({
           type: "error",
