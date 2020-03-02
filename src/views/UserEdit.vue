@@ -34,14 +34,8 @@
 </template>
 
 <script>
-const dummyData = {
-  profile: {
-    id: 1,
-    name: "root",
-    email: "root@example.com",
-    image: "https://i.imgur.com/JtQJRMZ.png"
-  }
-};
+import usersAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
 
 export default {
   data() {
@@ -57,13 +51,25 @@ export default {
     this.fetchUser(id);
   },
   methods: {
-    fetchUser(userId) {
-      console.log("fetchUser id:", userId);
-      const { profile } = dummyData;
-      this.id = profile.id;
-      this.name = profile.name;
-      this.email = profile.email;
-      this.image = profile.image;
+    async fetchUser(userId) {
+      try {
+        const { data, statusText } = await usersAPI.get({ userId });
+        const { profile } = data;
+
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
+
+        this.id = profile.id;
+        this.image = profile.image;
+        this.name = profile.name;
+        this.email = profile.email;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得使用者資料，請稍後再試"
+        });
+      }
     },
     handleFileChange(e) {
       const files = e.target.files;
@@ -72,11 +78,32 @@ export default {
       const imageURL = window.URL.createObjectURL(files[0]);
       this.image = imageURL;
     },
-    handleSubmit(e) {
+    async handleSubmit(e) {
+      if (!this.name) {
+        Toast.fire({
+          icon: "warning",
+          title: "您尚未填寫姓名"
+        });
+        return;
+      }
       const form = e.target;
       const formData = new FormData(form);
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ": " + value);
+      try {
+        const { data, statusText } = await usersAPI.updateUser({
+          userId: this.id,
+          formData
+        });
+
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+
+        this.$router.push({ name: "user", params: { id: this.id } });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法變更使用者資料，請稍後再試"
+        });
       }
     }
   }
