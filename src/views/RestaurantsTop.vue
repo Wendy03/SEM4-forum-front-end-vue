@@ -30,7 +30,7 @@
               v-if="restaurant.isFavorited"
               type="button"
               class="btn btn-danger mr-2"
-              @click.stop.prevent="removeFavorite(restaurant.id)"
+              @click.stop.prevent="deleteFavorite(restaurant.id)"
             >移除最愛</button>
             <button
               v-else
@@ -88,10 +88,19 @@ export default {
         if (statusText !== "OK" || data.status !== "success") {
           throw new Error(statusText);
         }
-        this.restaurant = {
-          ...this.restaurant,
-          isFavorited: true
-        };
+
+        this.restaurants = this.restaurants
+          .map(restaurant => {
+            if (restaurant.id !== restaurantId) {
+              return restaurant;
+            }
+            return {
+              ...restaurant,
+              FavoriteCount: restaurant.FavoriteCount + 1,
+              isFavorited: true
+            };
+          })
+          .sort((a, b) => b.FavoriteCount - a.FavoriteCount);
       } catch (error) {
         Toast.fire({
           type: "error",
@@ -108,10 +117,18 @@ export default {
         if (statusText !== "OK" || data.status !== "success") {
           throw new Error(statusText);
         }
-        this.restaurant = {
-          ...this.restaurant,
-          isFavorited: false
-        };
+        this.restaurants = this.restaurants
+          .map(restaurant => {
+            if (restaurant.id !== restaurantId) {
+              return restaurant;
+            }
+            return {
+              ...restaurant,
+              FavoriteCount: restaurant.FavoriteCount - 1,
+              isFavorited: false
+            };
+          })
+          .sort((a, b) => b.FavoriteCount - a.FavoriteCount);
       } catch (error) {
         Toast.fire({
           type: "error",
