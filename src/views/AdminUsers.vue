@@ -17,7 +17,7 @@
           <th scope="row">{{user.id}}</th>
           <td>{{user.email}}</td>
           <td>{{user.isAdmin ? 'admin' : 'user'}}</td>
-          <td>
+          <td v-if="currentUser.id !== user.id">
             <button
               v-if="currentUser !== user.id"
               type="button"
