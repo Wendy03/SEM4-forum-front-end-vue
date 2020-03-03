@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       restaurant: this.initialRestaurant,
-      isProcessing: true
+      isProcessing: false
     };
   },
   methods: {
