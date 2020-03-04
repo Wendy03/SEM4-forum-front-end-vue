@@ -167,13 +167,14 @@ export default {
   methods: {
     async fetchCategories() {
       try {
+        this.isLoading = true;
         const { data, statusText } = await adminAPI.categories.get();
         console.log({ data, statusText });
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
         this.categories = data.categories;
-        this.isLoading = true;
+        this.isLoading = false;
       } catch {
         this.isLoading = false;
         Toast.fire({

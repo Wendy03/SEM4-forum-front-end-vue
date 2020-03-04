@@ -58,12 +58,15 @@ export default {
   methods: {
     async fetchRestaurants() {
       try {
+        this.isLoading = false;
         const { data, statusText } = await adminAPI.restaurants.get();
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
         this.restaurants = data.restaurants;
+        this.isLoading = false;
       } catch {
+        this.isLoading = false;
         Toast.fire({
           type: "error",
           title: "無法取得餐廳，請稍後再試",
