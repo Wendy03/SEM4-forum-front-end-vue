@@ -11,6 +11,9 @@ export default {
     create({ formData }) {
       return apiHelper.post('/admin/restaurants', formData)
     },
+    update({ restaurantId, formData }) {
+      return apiHelper.put(`/admin/restaurants/${restaurantId}`, formData)
+    },
     delete({ restaurantId }) {
       return apiHelper.delete(`/admin/restaurants/${restaurantId}`)
     }

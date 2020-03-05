@@ -18,9 +18,9 @@
           <th scope="row">{{user.id}}</th>
           <td>{{user.email}}</td>
           <td>{{user.isAdmin ? 'admin' : 'user'}}</td>
-          <td v-if="currentUser.id !== user.id">
+          <td>
             <button
-              v-if="currentUser !== user.id"
+              v-if="currentUser.id !== user.id "
               type="button"
               class="btn btn-link"
               @click.stop.prevent="toggleUserRole({userId: user.id, isAdmin:user.isAdmin} )"

@@ -60,8 +60,8 @@ export default {
       } catch (error) {
         this.isProcessing = false;
         Toast.fire({
-          type: "error",
-          title: "無法建立餐廳，請稍後再試"
+          icon: "error",
+          title: "無法修改餐廳資料，請稍後再試"
         });
       }
     },
