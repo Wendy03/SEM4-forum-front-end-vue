@@ -129,9 +129,14 @@ router.beforeEach(async (to, from, next) => {
   const tokenInStore = store.state.token
   let isAuthenticated = store.state.isAuthenticated
 
-  // 比較 localStorage 和 store 中的 token 是否一樣
   if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
     isAuthenticated = await store.dispatch('fetchCurrentUser')
+  }
+
+  const pathsWithoutAuthentication = ['sign-up']
+  if (pathsWithoutAuthentication.includes(to.name)) {
+    next()
+    return
   }
 
   // 如果 token 無效則轉址到登入頁
