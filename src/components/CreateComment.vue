@@ -32,9 +32,8 @@ export default {
       try {
         if (!this.text) {
           Toast.fire({
-            type: "warning",
-            title: "尚未填寫評論",
-            icon: "warning"
+            icon: "warning",
+            title: "尚未填寫評論"
           });
           return;
         }
@@ -54,6 +53,10 @@ export default {
         });
         this.isProcessing = false;
         this.text = ""; // 將表單內的資料清空
+        Toast.fire({
+          icon: "success",
+          title: "成功新增評論"
+        });
       } catch (error) {
         this.isProcessing = false;
         Toast.fire({

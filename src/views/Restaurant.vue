@@ -25,6 +25,7 @@ import restaurantsAPI from "./../apis/restaurants";
 import Spinner from "./../components/Spinner.vue";
 import { Toast } from "./../utils/helpers";
 import { mapState } from "vuex";
+import { categoryFilter } from "./../utils/mixins";
 
 export default {
   name: "Restaurant",
@@ -34,6 +35,7 @@ export default {
     CreateComment,
     Spinner
   },
+  mixins: [categoryFilter],
   data() {
     return {
       restaurant: {
@@ -69,6 +71,7 @@ export default {
     // STEP 2: 改用 async...await 語法
     async fetchRestaurant(restaurantId) {
       try {
+        this.isLoading = true;
         // STEP 3: 透過 restaurantsAPI 取得餐廳資訊
         const { data, statusText } = await restaurantsAPI.getRestaurant({
           restaurantId
@@ -98,11 +101,10 @@ export default {
         this.isLoading = false;
         // STEP 5: 錯誤處理
         Toast.fire({
-          type: "error",
+          icon: "error",
           title: "無法取得餐廳資料，請稍後再試"
         });
       }
-      this.fetchRestaurant(restaurantId);
     },
     afterCreateComment(payload) {
       const { commentId, restaurantId, text } = payload;
