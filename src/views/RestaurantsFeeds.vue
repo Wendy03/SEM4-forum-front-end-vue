@@ -50,7 +50,7 @@ export default {
     async fetchFeeds() {
       try {
         const response = await restaurantsAPI.getFeeds();
-        console.log("response", response);
+
         const { data, statusText } = response;
         if (statusText !== "OK") {
           throw new Error(statusText);

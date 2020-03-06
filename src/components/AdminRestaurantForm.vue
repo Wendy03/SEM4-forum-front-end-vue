@@ -169,7 +169,7 @@ export default {
       try {
         this.isLoading = true;
         const { data, statusText } = await adminAPI.categories.get();
-        console.log({ data, statusText });
+
         if (statusText !== "OK") {
           throw new Error(statusText);
         }

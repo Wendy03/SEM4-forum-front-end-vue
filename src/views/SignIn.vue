@@ -81,7 +81,7 @@ export default {
           email: this.email,
           password: this.password
         });
-        console.log(response);
+        // console.log(response);
         const { data, statusText } = response;
         if (statusText !== "OK" || data.status !== "success") {
           throw new Error(statusText);
